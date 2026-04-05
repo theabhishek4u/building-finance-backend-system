@@ -1,0 +1,57 @@
+### 1. Root Endpoint
+GET http://localhost:5000/
+
+### 2. Dashboard Summary (All Roles)
+# Returns income/expense, balance, breakdown, and 6-month monthly trends.
+GET http://localhost:5000/api/dashboard/summary
+x-user-id: 642e12e3a1b2c3d4e5f6a7b8  # Replace with actual Seeder Admin ID
+
+### 3. Financial Records - List (Analyst/Admin)
+GET http://localhost:5000/api/records
+x-user-id: 642e12e3a1b2c3d4e5f6a7b9
+
+### 4. Financial Records - With Search (Analyst/Admin)
+# Keywords filter descriptions and categories.
+GET http://localhost:5000/api/records?search=Salary
+x-user-id: 642e12e3a1b2c3d4e5f6a7b9
+
+### 5. Financial Records - With Pagination (Analyst/Admin)
+# Parameters: page=1, limit=5
+GET http://localhost:5000/api/records?page=1&limit=2
+x-user-id: 642e12e3a1b2c3d4e5f6a7b9
+
+### 6. Create Record (Admin Only)
+POST http://localhost:5000/api/records
+Content-Type: application/json
+x-user-id: 642e12e3a1b2c3d4e5f6a7b8
+
+{
+  "amount": 2500,
+  "type": "income",
+  "category": "Project",
+  "description": "New website design payment"
+}
+
+### 7. Soft Delete Record (Admin Only)
+# Change the ID to an existing record ID.
+DELETE http://localhost:5000/api/records/RECORD_ID_HERE
+x-user-id: 642e12e3a1b2c3d4e5f6a7b8
+
+### 8. Unauthorized Access Test (Viewer trying to create record)
+# Expected: 403 Forbidden
+POST http://localhost:5000/api/records
+Content-Type: application/json
+x-user-id: 642e12e3a1b2c3d4e5f6a7ba  # Replace with actual Viewer ID
+
+{
+  "amount": 100,
+  "type": "expense",
+  "category": "Coffee",
+  "description": "Starbucks"
+}
+
+### 9. Inactive User Test (Any request with inactive user)
+# Expected: 403 Forbidden - Access denied.
+# (Update status of a user to inactive to test)
+GET http://localhost:5000/api/dashboard/summary
+x-user-id: 642e12e3a1b2c3d4e5f6a7b8
