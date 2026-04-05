@@ -60,13 +60,23 @@ const connectDB = async () => {
         }
     } catch (err) {
         console.error(`Error connecting to MongoDB: ${err.message}`);
-        process.exit(1);
+        if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+            process.exit(1);
+        }
     }
 };
 
-connectDB().then(() => {
+// Export the app for Vercel
+module.exports = app;
+
+
+// Connect to Database
+connectDB();
+
+// Only listen if not running as a Vercel function
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
     app.listen(PORT, () => {
         console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
         console.log(`Test UI/API at: http://localhost:${PORT}`);
     });
-});
+}
